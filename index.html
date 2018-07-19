@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,inital-scale=1.0">
+        <meta http-equiv="X-UX-Compatible" content="ie=edge">
+        <title>Contract</title>
+        <link rel="stylesheet" type="text/css" href="main.css">
+        <script src="./node_modules/web3/dist/web3.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Instructor</h1>
+            <h2 id="instructor"></h2>
+
+            <label for="name" class="col-lg-2 control-label">Name</label>
+            <input id="name" type="text">
+
+            <label for="name" class="col-lg-2 control-label">Age</label>
+            <input id="age" type="text">
+
+            <button id="button">Update Data</button>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script>
+        if (typeof web3 !== 'undefined') 
+        {
+             web3 = new Web3(web3.currentProvider); } 
+             else 
+             { 
+                 web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545")); 
+             }
+        
+             web3.eth.defaultAccount=web3.eth.accounts[0];
+
+        var FirstContract=web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_fname",
+				"type": "string"
+			},
+			{
+				"name": "_age",
+				"type": "uint256"
+			}
+		],
+		"name": "SetInstructor",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "GetInstructor",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]);
+        //Needs to be updated everytime deployment is done
+        var FirstCon=FirstContract.at('0x508805775ba7a5a0f599835dadb42954a593f4c0');
+        console.log(FirstCon);
+        FirstCon.GetInstructor(function(error,result)
+        {
+            if(!error){
+                $("#instructor").html(result[0]+'('+result[1]+ 'Years old)');
+            }else
+            {
+                colsole.log(error);
+            }
+        });
+
+        $("#button").click(function(){
+            FirstCon.SetInstructor($("#name").val(),$("#age").val());
+        });
+
+        </script>
+    </body>
+</html>
